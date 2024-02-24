@@ -13,16 +13,18 @@ class Medication {
   Medication();
 
   /// The name of the medication
-  late String name;
+  String? name;
 
   /// The frequency of the medication
   Frequency frequency = Frequency();
 
   bool verifyFields() {
-    if (name.isEmpty) {
+    if (name == null || name!.isEmpty) {
+      print("name uninitialized");
       return false;
     }
     if (!frequency.verifyFields()) {
+      print("frequency error");
       return false;
     }
     return true;
@@ -37,17 +39,28 @@ class Frequency {
   List<TimeOfDay> timeOfDay = [];
 
   ///Days of the week to take it (optional)
-  late List<int>? daysOfWeek;
+  List<int>? daysOfWeek;
 
   ///How many days between doses (optional)
-  late int? daysBetween;
+  int? daysBetween;
+
+  DateTime? endDate;
+  bool hasEndDate = false;
 
   bool verifyFields() {
     if (timeOfDay.isEmpty) {
+      print("no time of day");
       return false;
     }
     if (daysOfWeek == null && daysBetween == null) {
+      print("no interval");
       return false;
+    }
+    if (endDate == null) {
+      if (hasEndDate) {
+        print("end date not set");
+        return false;
+      }
     }
     return true;
   }

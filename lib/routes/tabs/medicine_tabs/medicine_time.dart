@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tsa_software_2024/routes/locations/add_medicine.dart';
+import 'package:tsa_software_2024/data/data_manager.dart';
 
 class MedicineTimeView extends StatefulWidget {
-  const MedicineTimeView({super.key});
+  final Medication data;
+  const MedicineTimeView({super.key, required this.data});
 
   @override
   State<MedicineTimeView> createState() => MedicineTimeViewState();
@@ -27,12 +28,12 @@ class MedicineTimeViewState extends State<MedicineTimeView> {
           ),
           Expanded(
               child: ListView(
-                children: AddMedicineRoute.of(context)!.data.frequency.timeOfDay.map((time) {
+                children: widget.data.frequency.timeOfDay.map((time) {
                   return ListTile(
                     title: Text(time.format(context), style: const TextStyle(fontSize: 24)),
                     trailing: IconButton(icon: const Icon(Icons.delete), onPressed: () => setState(() {
-                      AddMedicineRoute.of(context)!.data.frequency.timeOfDay.remove(time);
-                      times = AddMedicineRoute.of(context)!.data.frequency.timeOfDay;
+                      widget.data.frequency.timeOfDay.remove(time);
+                      times = widget.data.frequency.timeOfDay;
                     })),
                     onTap: () {
                       showTimePicker(
@@ -40,9 +41,9 @@ class MedicineTimeViewState extends State<MedicineTimeView> {
                         initialTime: time,
                       ).then((TimeOfDay? value) {
                         if (value != null) {
-                          AddMedicineRoute.of(context)!.data.frequency.timeOfDay[AddMedicineRoute.of(context)!.data.frequency.timeOfDay.indexOf(time)] = value;
+                          widget.data.frequency.timeOfDay[widget.data.frequency.timeOfDay.indexOf(time)] = value;
                           setState(() {
-                            times = AddMedicineRoute.of(context)!.data.frequency.timeOfDay;
+                            times = widget.data.frequency.timeOfDay;
                           });
                         }
                       });
@@ -60,9 +61,9 @@ class MedicineTimeViewState extends State<MedicineTimeView> {
             initialTime: TimeOfDay.now(),
           ).then((TimeOfDay? value) {
             if (value != null) {
-              AddMedicineRoute.of(context)!.data.frequency.timeOfDay.add(value);
+              widget.data.frequency.timeOfDay.add(value);
               setState(() {
-                times = AddMedicineRoute.of(context)!.data.frequency.timeOfDay;
+                times = widget.data.frequency.timeOfDay;
               });
             }
           });
