@@ -73,6 +73,7 @@ class AddMedicineRouteState extends State<AddMedicineRoute>{
   }
 
   void addMedication(BuildContext context) async {
+    if (!data.verifyFields()) return;
     var appData = await getAppData();
     appData.medications.add(data);
     saveAppData(appData);

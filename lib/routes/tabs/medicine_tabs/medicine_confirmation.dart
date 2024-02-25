@@ -50,8 +50,8 @@ class _MedicineConfirmationViewState extends State<MedicineConfirmationView> {
                   ),
                 ),
                 ListTile(
-                  title: Text(trimEnding(parent.frequency.timeOfDay
-                      .fold("", (value, element) => value += "${element.format(context)}, "))),
+                  title: Text(trimEnding(parent.frequency.timesOfDay
+                      .fold("", (value, element) => value += "${element.toTime().format(context)}, "))),
                   subtitle: const Text("Times of day"),
                   trailing: IconButton(
                     icon: const Icon(Icons.edit),

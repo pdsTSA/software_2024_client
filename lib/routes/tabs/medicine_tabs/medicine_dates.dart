@@ -15,7 +15,7 @@ class _MedicineDatesViewState extends State<MedicineDatesView> {
   var repeatMode = RepeatMode.interval;
   final weekdays = List.filled(7, false);
   var daysBetween = 0;
-  var hasEndDate = true;
+  var hasEndDate = false;
   var endDate = DateTime.now();
 
   final DateFormat dateFormatter = DateFormat('yyyy-MM-dd');

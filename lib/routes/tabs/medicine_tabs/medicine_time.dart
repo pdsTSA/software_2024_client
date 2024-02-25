@@ -10,7 +10,7 @@ class MedicineTimeView extends StatefulWidget {
 }
 
 class MedicineTimeViewState extends State<MedicineTimeView> {
-  List<TimeOfDay> times = [];
+  List<MedicationTime> times = [];
 
   @override
   Widget build(BuildContext context) {
@@ -28,22 +28,22 @@ class MedicineTimeViewState extends State<MedicineTimeView> {
           ),
           Expanded(
               child: ListView(
-                children: widget.data.frequency.timeOfDay.map((time) {
+                children: widget.data.frequency.timesOfDay.map((time) {
                   return ListTile(
-                    title: Text(time.format(context), style: const TextStyle(fontSize: 24)),
+                    title: Text(time.toTime().format(context), style: const TextStyle(fontSize: 24)),
                     trailing: IconButton(icon: const Icon(Icons.delete), onPressed: () => setState(() {
-                      widget.data.frequency.timeOfDay.remove(time);
-                      times = widget.data.frequency.timeOfDay;
+                      widget.data.frequency.timesOfDay.remove(time);
+                      times = widget.data.frequency.timesOfDay;
                     })),
                     onTap: () {
                       showTimePicker(
                         context: context,
-                        initialTime: time,
+                        initialTime: time.toTime(),
                       ).then((TimeOfDay? value) {
                         if (value != null) {
-                          widget.data.frequency.timeOfDay[widget.data.frequency.timeOfDay.indexOf(time)] = value;
+                          widget.data.frequency.timesOfDay[widget.data.frequency.timesOfDay.indexOf(time)] = MedicationTime(time: value);
                           setState(() {
-                            times = widget.data.frequency.timeOfDay;
+                            times = widget.data.frequency.timesOfDay;
                           });
                         }
                       });
@@ -61,9 +61,9 @@ class MedicineTimeViewState extends State<MedicineTimeView> {
             initialTime: TimeOfDay.now(),
           ).then((TimeOfDay? value) {
             if (value != null) {
-              widget.data.frequency.timeOfDay.add(value);
+              widget.data.frequency.timesOfDay.add(MedicationTime(time: value));
               setState(() {
-                times = widget.data.frequency.timeOfDay;
+                times = widget.data.frequency.timesOfDay;
               });
             }
           });

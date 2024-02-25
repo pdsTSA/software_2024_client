@@ -52,9 +52,9 @@ class RootRouteState extends State<RootRoute> {
           body: IndexedStack(
             index: currentIndex,
             children: [
-              MedicineView(),
-              HomeView(camera: widget.cameras.first),
-              CalendarView(),
+              (currentIndex == 0) ? MedicineView() : Container(),
+              (currentIndex == 1) ? HomeView(camera: widget.cameras.first) : Container(),
+              (currentIndex == 2) ? CalendarView() : Container(),
             ],
           ),
         )

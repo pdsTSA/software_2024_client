@@ -9,6 +9,8 @@ class MedicineNameView extends StatefulWidget {
   State<MedicineNameView> createState() => _MedicineNameViewState();
 }
 
+//TODO: reduce the amount of white space by adding confirmation for medicine and
+//giving information on it right in the screen
 class _MedicineNameViewState extends State<MedicineNameView> {
   @override
   Widget build(BuildContext context) {
