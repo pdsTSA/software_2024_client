@@ -110,11 +110,11 @@ class Frequency {
 
   Duration? nextDuration(DateTime startTime) {
     DateTime now = startTime;
-    if (now.isAfter(endDate!)) {
+    if (hasEndDate && now.isAfter(endDate!)) {
       return null;
     }
     if (now.isBefore(startDate!)) {
-      now = startDate!;
+      return null;
     }
     DateTime next = now.copyWith();
 
@@ -141,8 +141,8 @@ class Frequency {
     //set to earliest time
     for (final e in timesOfDay) {
       next = DateTime(next.year, next.month, next.day, e.hour, e.minute);
-      print("current: $now");
-      print("next: $next");
+      //print("current: $now");
+      //print("next: $next");
       if (next.isAfter(now)) {
         return next.difference(now);
       }

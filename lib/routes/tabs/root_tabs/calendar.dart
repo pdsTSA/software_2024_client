@@ -14,12 +14,13 @@ class CalendarViewState extends State<CalendarView> {
   var lastDay = DateTime.utc(2100);
   var focusedDay = DateTime.now();
   var calendarFormat = CalendarFormat.month;
+  AppData? appData;
 
   List<CalendarEvent> dailyMedications = [];
+  Map<DateTime, List<CalendarEvent>> cache = {};
 
-  Future<List<CalendarEvent>> generateDailyMedications(DateTime day) async {
-    var appData = await getAppData();
-    var medications = appData.medications;
+  List<CalendarEvent> generateDailyMedications(DateTime day) {
+    var medications = appData!.medications;
     var currentTime = day;
     var events = <CalendarEvent>[];
 
@@ -41,44 +42,60 @@ class CalendarViewState extends State<CalendarView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Column(children: [
-      Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: TableCalendar(
-          firstDay: firstDay,
-          lastDay: lastDay,
-          focusedDay: focusedDay,
-          selectedDayPredicate: (day) {
-            return isSameDay(focusedDay, day);
-          },
-          onDaySelected: (selectedDay, focusedDay) async {
-            var newDailyMedications = await generateDailyMedications(DateTime(
-                focusedDay.year, focusedDay.month, focusedDay.day, 0, 0));
-            setState(() {
-              this.focusedDay = focusedDay;
-              dailyMedications = newDailyMedications;
-            });
-          },
-          calendarFormat: calendarFormat,
-          onFormatChanged: (format) {
-            setState(() {
-              calendarFormat = format;
-            });
-          },
-        ),
-      ),
-      Expanded(
-          child: ListView.builder(
-        itemCount: dailyMedications.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(dailyMedications[index].title),
-            subtitle: Text(dailyMedications[index].time.format(context)),
-          );
-        },
-      )),
-    ]));
+    return FutureBuilder(
+        future: getAppData(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            appData = snapshot.data! as AppData?;
+            return Scaffold(
+                body: Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: TableCalendar(
+                      firstDay: firstDay,
+                      lastDay: lastDay,
+                      focusedDay: focusedDay,
+                      selectedDayPredicate: (day) {
+                        return isSameDay(focusedDay, day);
+                      },
+                      onDaySelected: (selectedDay, focusedDay) {
+                        var newDailyMedications = generateDailyMedications(DateTime(
+                            focusedDay.year, focusedDay.month, focusedDay.day, 0, 0));
+                        setState(() {
+                          this.focusedDay = focusedDay;
+                          dailyMedications = newDailyMedications;
+                        });
+                      },
+                      calendarFormat: calendarFormat,
+                      onFormatChanged: (format) {
+                        setState(() {
+                          calendarFormat = format;
+                        });
+                      },
+                      eventLoader: (focusedDay) {
+                        var date = DateTime(
+                            focusedDay.year, focusedDay.month, focusedDay.day, 0, 0);
+
+                        return cache[date] ?? generateDailyMedications(date);
+                      },
+                    ),
+                  ),
+                  Expanded(
+                      child: ListView.builder(
+                        itemCount: dailyMedications.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(dailyMedications[index].title),
+                            subtitle: Text(dailyMedications[index].time.format(context)),
+                          );
+                        },
+                      )),
+                ]));
+          } else {
+            return Container();
+          }
+        }
+    );
   }
 }
 

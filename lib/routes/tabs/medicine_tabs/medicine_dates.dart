@@ -141,36 +141,35 @@ class _MedicineDatesViewState extends State<MedicineDatesView> {
                     ),
                   ],
                 ),
-                Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: OutlinedButton(
-                      onPressed: () async {
-                        var date = await showDatePicker(
-                            context: context,
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime.utc(2100)
-                        );
-
-                        setState(() {
-                          if (date != null) {
-                            startDate = date;
-                            updateData();
-                          }
-                        });
-                      },
-                      child: Text("Start: ${dateFormatter.format(startDate)}"),
-                    )
-                )
               ],
             )
           ),
           Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: ListTile(
+              padding: const EdgeInsets.only(left: 16),
+              child: OutlinedButton(
+                onPressed: () async {
+                  var date = await showDatePicker(
+                      context: context,
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.utc(2100)
+                  );
+
+                  setState(() {
+                    if (date != null) {
+                      startDate = date;
+                      updateData();
+                    }
+                  });
+                },
+                child: Text("Start: ${dateFormatter.format(startDate)}"),
+              )
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  ListTile(
                     title: Text("Has End Date"),
                     leading: Checkbox(
                       value: hasEndDate,
@@ -181,28 +180,28 @@ class _MedicineDatesViewState extends State<MedicineDatesView> {
                         })
                       },
                     ),
-                  )
-                ),
-                Container(
-                  child: (hasEndDate) ? OutlinedButton(
-                    onPressed: () async {
-                      var date = await showDatePicker(
-                        context: context,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.utc(2100)
-                      );
+                  ),
+                  Container(
+                      child: (hasEndDate) ? OutlinedButton(
+                        onPressed: () async {
+                          var date = await showDatePicker(
+                              context: context,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.utc(2100)
+                          );
 
-                      setState(() {
-                        if (date != null) {
-                          endDate = date;
-                          updateData();
-                        }
-                      });
-                    },
-                    child: Text("End: ${dateFormatter.format(endDate)}"),
-                  ) : Container()
-                )
-              ],
+                          setState(() {
+                            if (date != null) {
+                              endDate = date;
+                              updateData();
+                            }
+                          });
+                        },
+                        child: Text("End: ${dateFormatter.format(endDate)}"),
+                      ) : Container()
+                  )
+                ],
+              ),
             ),
           )
         ],
