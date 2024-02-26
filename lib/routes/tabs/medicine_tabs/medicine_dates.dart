@@ -33,8 +33,9 @@ class _MedicineDatesViewState extends State<MedicineDatesView> {
       case RepeatMode.interval:
         widget.data.frequency.daysBetween = daysBetween;
         widget.data.frequency.daysOfWeek = null;
-        widget.data.frequency.lastDay = startDate.subtract(Duration(days: daysBetween)).millisecondsSinceEpoch;
     }
+
+    widget.data.frequency.startDate = DateTime(startDate.year, startDate.month, startDate.day);
 
     widget.data.frequency.hasEndDate = hasEndDate;
     if (hasEndDate) {
@@ -116,48 +117,52 @@ class _MedicineDatesViewState extends State<MedicineDatesView> {
                 "Fri",
                 "Sat"
               ],
-            ) : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            ) : Column(
               children: [
-                const Text("Repeat every ", style: TextStyle(fontSize: 16)),
-                SizedBox(
-                  width: 32,
-                  child: TextField(
-                    controller: TextEditingController(text: daysBetween.toString()),
-                    style: const TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    onChanged: (String value) {
-                      setState(() {
-                        daysBetween = int.parse(value);
-                        updateData();
-                      });
-                    },
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Repeat every $daysBetween days", style: const TextStyle(fontSize: 16)),
+                    SizedBox(
+                        width: 220,
+                        child: Slider(
+                          value: daysBetween.toDouble(),
+                          min: 1,
+                          max: 30,
+                          divisions: 29,
+                          label: daysBetween.toString(),
+                          onChanged: (value) {
+                            setState(() {
+                              daysBetween = value.round();
+                              updateData();
+                            });
+                          },
+                        )
+                    ),
+                  ],
                 ),
-                const Text(" days", style: TextStyle(fontSize: 16)),
                 Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      var date = await showDatePicker(
-                        context: context,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.utc(2100)
-                      );
+                    padding: const EdgeInsets.only(left: 16),
+                    child: OutlinedButton(
+                      onPressed: () async {
+                        var date = await showDatePicker(
+                            context: context,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.utc(2100)
+                        );
 
-                      setState(() {
-                        if (date != null) {
-                          startDate = date;
-                          updateData();
-                        }
-                      });
-                    },
-                    child: Text("Start: ${dateFormatter.format(startDate)}"),
-                  )
+                        setState(() {
+                          if (date != null) {
+                            startDate = date;
+                            updateData();
+                          }
+                        });
+                      },
+                      child: Text("Start: ${dateFormatter.format(startDate)}"),
+                    )
                 )
               ],
-            ),
+            )
           ),
           Padding(
             padding: const EdgeInsets.all(16),

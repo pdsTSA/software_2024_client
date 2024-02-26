@@ -45,67 +45,28 @@ class Notifier {
 
     final appData = await getAppData();
     for (var medication in appData.medications) {
-      schedule(medication);
+      await schedule(medication);
     }
+    saveAppData(appData);
   }
 
-  static void schedule(Medication medication) async {
+  static Future<void> schedule(Medication medication) async {
     await Workmanager().cancelByUniqueName(medication.uuid);
 
     if (medication.enabled) {
-      await Workmanager().registerOneOffTask(
-        medication.uuid,
-        medication.uuid,
-        initialDelay: _frequencyToDuration(medication.frequency, DateTime.now()),
-        constraints: Constraints(
-          networkType: NetworkType.connected,
-        ),
-      );
-    }
-  }
+      var nextDuration = medication.frequency.nextDuration(DateTime.now());
 
-
-  //TODO: write tests for this. I have no idea if it works
-  static Duration _frequencyToDuration(Frequency frequency, DateTime startTime) {
-    DateTime now = startTime;
-    DateTime next = DateTime.now();
-
-    var latestTime = frequency.getLatestTime();
-
-    //check if its today or not
-    if (now.hour > latestTime.hour && now.minute > latestTime.minute) {
-      if (frequency.daysBetween != null) {
-        //interval repeat mode
-        var lastDay = DateTime.fromMillisecondsSinceEpoch(frequency.lastDay);
-        lastDay = DateTime(lastDay.year, lastDay.month, lastDay.day, 0, 0);
-
-        next = lastDay.add(Duration(days: frequency.daysBetween!));
-        if (next.isBefore(now)) {
-          next = DateTime(now.year, now.month, now.day, latestTime.hour, latestTime.minute);
-          next = next.add(Duration(days: frequency.daysBetween!));
-        }
-        next = DateTime(next.year, next.month, next.day, 0, 0);
-      } else if (frequency.daysOfWeek != null) {
-        //weekday repeat mode
-        for (var i = 1; i < 8; i++) {
-          if (frequency.daysOfWeek!.contains((now.weekday + i) % 7)) {
-            next = now.add(Duration(days: i));
-            next = DateTime(next.year, next.month, next.day, 0, 0);
-            break;
-          }
-        }
+      if (nextDuration != null) {
+        await Workmanager().registerOneOffTask(
+          medication.uuid,
+          medication.uuid,
+          initialDelay: nextDuration,
+          constraints: Constraints(
+            networkType: NetworkType.connected,
+          ),
+        );
       }
     }
-
-    //set to earliest time
-    for (final e in frequency.timesOfDay) {
-      next = DateTime(next.year, next.month, next.day, e.hour, e.minute);
-      if (next.isAfter(now)) {
-        return next.difference(now);
-      }
-    }
-
-    throw Exception("No time found");
   }
 
   static Future<void> onDidReceiveNotificationResponse(NotificationResponse response) async {
@@ -127,10 +88,8 @@ void callbackDispatcher() {
     var medication = appData.medications[index];
     //TODO: improve this message
     Notifier.notify("pillmate", "Take your medication", medication.name!);
-
-    medication.frequency.lastDay = DateTime.now().millisecondsSinceEpoch;
+    await Notifier.schedule(medication);
     appData.medications[index] = medication;
-    Notifier.schedule(medication);
     saveAppData(appData);
 
     return Future.value(true);

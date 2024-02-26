@@ -36,7 +36,9 @@ Frequency _$FrequencyFromJson(Map<String, dynamic> json) => Frequency()
   ..daysOfWeek =
       (json['daysOfWeek'] as List<dynamic>?)?.map((e) => e as int).toList()
   ..daysBetween = json['daysBetween'] as int?
-  ..lastDay = json['lastDay'] as int
+  ..startDate = json['startDate'] == null
+      ? null
+      : DateTime.parse(json['startDate'] as String)
   ..endDate =
       json['endDate'] == null ? null : DateTime.parse(json['endDate'] as String)
   ..hasEndDate = json['hasEndDate'] as bool;
@@ -45,7 +47,7 @@ Map<String, dynamic> _$FrequencyToJson(Frequency instance) => <String, dynamic>{
       'timesOfDay': instance.timesOfDay,
       'daysOfWeek': instance.daysOfWeek,
       'daysBetween': instance.daysBetween,
-      'lastDay': instance.lastDay,
+      'startDate': instance.startDate?.toIso8601String(),
       'endDate': instance.endDate?.toIso8601String(),
       'hasEndDate': instance.hasEndDate,
     };

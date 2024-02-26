@@ -67,8 +67,7 @@ class Frequency {
   ///How many days between doses (optional)
   int? daysBetween;
 
-  ///Most recent day to take the medication (in unix time)
-  int lastDay = 0;
+  DateTime? startDate;
 
   DateTime? endDate;
   bool hasEndDate = false;
@@ -101,6 +100,52 @@ class Frequency {
       }
     }
     return latest;
+  }
+
+  int _daysBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    return (to.difference(from).inHours / 24).round();
+  }
+
+  Duration? nextDuration(DateTime startTime) {
+    DateTime now = startTime;
+    DateTime next = startTime;
+
+    //check if its today or not
+    if (daysBetween != null) {
+      print("interval");
+      //interval repeat mode
+      var daysSince = _daysBetween(startDate!, now);
+      if (daysSince % daysBetween! == 0) {
+        next = now;
+      } else {
+        next = now.add(Duration(days: daysBetween! - (daysSince % daysBetween!)));
+      }
+    } else if (daysOfWeek != null) {
+      print("weekly");
+      //weekday repeat mode
+      for (var i = 1; i < 8; i++) {
+        if (daysOfWeek!.contains((now.weekday + i) % 7)) {
+          next = now.add(Duration(days: i));
+          next = DateTime(next.year, next.month, next.day, 0, 0);
+          break;
+        }
+      }
+    }
+
+    //set to earliest time
+    for (final e in timesOfDay) {
+      next = DateTime(next.year, next.month, next.day, e.hour, e.minute);
+      print("current: $now");
+      print("next: $next");
+      if (next.isAfter(now)) {
+        print("returning");
+        return next.difference(now);
+      }
+    }
+
+    return null;
   }
 
   factory Frequency.fromJson(Map<String, dynamic> json) => _$FrequencyFromJson(json);
