@@ -74,7 +74,8 @@ class HomeViewState extends State<HomeView> {
             print(e);
           }
         },
-      )
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
