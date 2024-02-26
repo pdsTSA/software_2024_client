@@ -118,7 +118,6 @@ class Frequency {
     }
     DateTime next = now.copyWith();
 
-    //check if its today or not
     if (daysBetween != null) {
       //interval repeat mode
       var daysSince = _daysBetween(startDate!, now);
@@ -129,7 +128,7 @@ class Frequency {
       }
     } else if (daysOfWeek != null) {
       //weekday repeat mode
-      for (var i = 1; i < 8; i++) {
+      for (var i = 0; i < 7; i++) {
         if (daysOfWeek!.contains((now.weekday + i) % 7)) {
           next = now.add(Duration(days: i));
           next = DateTime(next.year, next.month, next.day, 0, 0);
@@ -141,8 +140,6 @@ class Frequency {
     //set to earliest time
     for (final e in timesOfDay) {
       next = DateTime(next.year, next.month, next.day, e.hour, e.minute);
-      //print("current: $now");
-      //print("next: $next");
       if (next.isAfter(now)) {
         return next.difference(now);
       }

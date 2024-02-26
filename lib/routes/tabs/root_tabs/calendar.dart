@@ -25,12 +25,12 @@ class CalendarViewState extends State<CalendarView> {
     var events = <CalendarEvent>[];
 
     for (var medication in medications) {
-      var nextDate = currentTime;
+      var nextDate = currentTime.copyWith(hour: 0, minute: 0, second: 0);
       while (nextDate.day == currentTime.day) {
         var nextDuration = medication.frequency.nextDuration(nextDate);
         nextDate = nextDate.add(nextDuration ?? const Duration(days: 1));
 
-        if (nextDate.day == day.day) {
+        if (nextDate.day == currentTime.day) {
           events.add(CalendarEvent(
               title: medication.name!, time: TimeOfDay.fromDateTime(nextDate)));
         }
