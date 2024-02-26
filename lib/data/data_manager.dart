@@ -192,6 +192,8 @@ Future<AppData> getAppData() async {
 }
 
 void saveAppData(AppData appData) async {
+  appData.medications.sort((a, b) => a.name!.compareTo(b.name!));
+
   final directory = await getApplicationDocumentsDirectory();
   try {
     var file = File("${directory.path}/app.data");
