@@ -30,7 +30,8 @@ class CalendarViewState extends State<CalendarView> {
         nextDate = nextDate.add(nextDuration ?? const Duration(days: 1));
 
         if (nextDate.day == day.day) {
-          events.add(CalendarEvent(title: medication.name!, time: TimeOfDay.fromDateTime(nextDate)));
+          events.add(CalendarEvent(
+              title: medication.name!, time: TimeOfDay.fromDateTime(nextDate)));
         }
       }
     }
@@ -41,48 +42,43 @@ class CalendarViewState extends State<CalendarView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TableCalendar(
-                  firstDay: firstDay,
-                  lastDay: lastDay,
-                  focusedDay: focusedDay,
-                  selectedDayPredicate: (day) {
-                    return isSameDay(focusedDay, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) async {
-                    var newDailyMedications = await generateDailyMedications(
-                        DateTime(focusedDay.year, focusedDay.month, focusedDay.day, 0, 0)
-                    );
-                    setState(() {
-                      this.focusedDay = focusedDay;
-                      dailyMedications = newDailyMedications;
-                    });
-                  },
-                  calendarFormat: calendarFormat,
-                  onFormatChanged: (format) {
-                    setState(() {
-                      calendarFormat = format;
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: dailyMedications.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(dailyMedications[index].title),
-                      subtitle: Text(dailyMedications[index].time.format(context)),
-                    );
-                  },
-                )
-              ),
-            ]
-        )
-    );
+        body: Column(children: [
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: TableCalendar(
+          firstDay: firstDay,
+          lastDay: lastDay,
+          focusedDay: focusedDay,
+          selectedDayPredicate: (day) {
+            return isSameDay(focusedDay, day);
+          },
+          onDaySelected: (selectedDay, focusedDay) async {
+            var newDailyMedications = await generateDailyMedications(DateTime(
+                focusedDay.year, focusedDay.month, focusedDay.day, 0, 0));
+            setState(() {
+              this.focusedDay = focusedDay;
+              dailyMedications = newDailyMedications;
+            });
+          },
+          calendarFormat: calendarFormat,
+          onFormatChanged: (format) {
+            setState(() {
+              calendarFormat = format;
+            });
+          },
+        ),
+      ),
+      Expanded(
+          child: ListView.builder(
+        itemCount: dailyMedications.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(dailyMedications[index].title),
+            subtitle: Text(dailyMedications[index].time.format(context)),
+          );
+        },
+      )),
+    ]));
   }
 }
 

@@ -110,11 +110,16 @@ class Frequency {
 
   Duration? nextDuration(DateTime startTime) {
     DateTime now = startTime;
-    DateTime next = startTime;
+    if (now.isAfter(endDate!)) {
+      return null;
+    }
+    if (now.isBefore(startDate!)) {
+      now = startDate!;
+    }
+    DateTime next = now.copyWith();
 
     //check if its today or not
     if (daysBetween != null) {
-      print("interval");
       //interval repeat mode
       var daysSince = _daysBetween(startDate!, now);
       if (daysSince % daysBetween! == 0) {
@@ -123,7 +128,6 @@ class Frequency {
         next = now.add(Duration(days: daysBetween! - (daysSince % daysBetween!)));
       }
     } else if (daysOfWeek != null) {
-      print("weekly");
       //weekday repeat mode
       for (var i = 1; i < 8; i++) {
         if (daysOfWeek!.contains((now.weekday + i) % 7)) {
@@ -140,7 +144,6 @@ class Frequency {
       print("current: $now");
       print("next: $next");
       if (next.isAfter(now)) {
-        print("returning");
         return next.difference(now);
       }
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tsa_software_2024/data/data_manager.dart';
 import 'package:tsa_software_2024/routes/arguments/arguments.dart';
+import 'package:tsa_software_2024/widgets/medicine_overview.dart';
 
 class MedicineView extends StatefulWidget {
   final RouteObserver<ModalRoute> routeObserver;
@@ -65,6 +66,15 @@ class MedicineViewState extends State<MedicineView> with RouteAware {
                     Navigator.pushNamed(context, "/add_medicine", arguments: AddMedicineArguments(medicine: e));
                   },
                 ),
+                onTap: () async {
+                  await showModalBottomSheet(
+                      context: context,
+                      showDragHandle: true,
+                      builder: (context) {
+                        return MedicineOverview(parent: e);
+                      }
+                  );
+                },
               ))).values.toList() as List<Widget>
             );
           } else if (snapshot.hasError) {

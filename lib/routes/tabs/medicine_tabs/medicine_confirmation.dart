@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tsa_software_2024/data/data_manager.dart';
+import 'package:tsa_software_2024/widgets/medicine_overview.dart';
 
 class MedicineConfirmationView extends StatefulWidget {
   final Medication data;
@@ -36,64 +37,7 @@ class _MedicineConfirmationViewState extends State<MedicineConfirmationView> {
                 ],
               )
           ),
-          Expanded(
-            child: ListView(
-              children: [
-                ListTile(
-                  title: Text(parent.name!),
-                  subtitle: const Text("Medication name"),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      widget.switchScreens(0);
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: Text(trimEnding(parent.frequency.timesOfDay
-                      .fold("", (value, element) => value += "${element.toTime().format(context)}, "))),
-                  subtitle: const Text("Times of day"),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      widget.switchScreens(1);
-                    },
-                  ),
-                ),
-                (parent.frequency.daysOfWeek != null) ? ListTile(
-                  title: Text(trimEnding(parent.frequency.daysOfWeek!
-                      .map((e) => widget.daysOfWeek[e])
-                      .fold("", (previousValue, element) => previousValue += "$element, "))),
-                  subtitle: const Text("Medication days"),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      widget.switchScreens(2);
-                    },
-                  ),
-                ) : ListTile(
-                  title: Text("Once every ${parent.frequency.daysBetween} days"),
-                  subtitle: const Text("Medication interval"),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      widget.switchScreens(2);
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: Text((!parent.frequency.hasEndDate) ? "Never" : dateFormatter.format(parent.frequency.endDate!)),
-                  subtitle: const Text("Medication end date"),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      widget.switchScreens(2);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          )
+          MedicineOverview(parent: parent, switchScreens: widget.switchScreens),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
