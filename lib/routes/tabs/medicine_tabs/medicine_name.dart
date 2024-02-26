@@ -23,6 +23,7 @@ class _MedicineNameViewState extends State<MedicineNameView> {
             children: [
               const Text("Medicine Name", style: TextStyle(fontSize: 32)),
               TextField(
+                controller: TextEditingController(text: widget.data.name ?? ""),
                 style: const TextStyle(fontSize: 24),
                 onChanged: (String value) {
                   widget.data.name = value;

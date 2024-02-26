@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tsa_software_2024/data/data_manager.dart';
+import 'package:tsa_software_2024/notification/notifier.dart';
+import 'package:tsa_software_2024/routes/arguments/arguments.dart';
 import 'package:tsa_software_2024/routes/tabs/medicine_tabs/medicine_confirmation.dart';
 import 'package:tsa_software_2024/routes/tabs/medicine_tabs/medicine_dates.dart';
 import 'package:tsa_software_2024/routes/tabs/medicine_tabs/medicine_name.dart';
@@ -18,6 +20,12 @@ class AddMedicineRouteState extends State<AddMedicineRoute>{
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as AddMedicineArguments?;
+
+    if (args != null) {
+      data = args.medicine;
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -56,10 +64,10 @@ class AddMedicineRouteState extends State<AddMedicineRoute>{
         child: IndexedStack(
           index: currentScreen,
           children: [
-            MedicineNameView(data: data),
-            MedicineTimeView(data: data),
-            MedicineDatesView(data: data),
-            MedicineConfirmationView(data: data, switchScreens: navigateScreen, saveData: addMedication,)
+            (currentScreen == 0) ? MedicineNameView(data: data) : Container(),
+            (currentScreen == 1) ? MedicineTimeView(data: data) : Container(),
+            (currentScreen == 2) ? MedicineDatesView(data: data) : Container(),
+            (currentScreen == 3) ? MedicineConfirmationView(data: data, switchScreens: navigateScreen, saveData: addMedication,) : Container()
           ],
         ),
       )
@@ -75,8 +83,8 @@ class AddMedicineRouteState extends State<AddMedicineRoute>{
   void addMedication(BuildContext context) async {
     if (!data.verifyFields()) return;
     var appData = await getAppData();
-    appData.medications.add(data);
-    saveAppData(appData);
+    appData.addMedication(data);
+    Notifier.schedule(data);
     Navigator.of(context).pop();
   }
 }

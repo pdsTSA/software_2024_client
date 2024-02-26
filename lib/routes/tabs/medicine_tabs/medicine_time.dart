@@ -10,8 +10,6 @@ class MedicineTimeView extends StatefulWidget {
 }
 
 class MedicineTimeViewState extends State<MedicineTimeView> {
-  List<MedicationTime> times = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +31,6 @@ class MedicineTimeViewState extends State<MedicineTimeView> {
                     title: Text(time.toTime().format(context), style: const TextStyle(fontSize: 24)),
                     trailing: IconButton(icon: const Icon(Icons.delete), onPressed: () => setState(() {
                       widget.data.frequency.timesOfDay.remove(time);
-                      times = widget.data.frequency.timesOfDay;
                     })),
                     onTap: () {
                       showTimePicker(
@@ -41,9 +38,8 @@ class MedicineTimeViewState extends State<MedicineTimeView> {
                         initialTime: time.toTime(),
                       ).then((TimeOfDay? value) {
                         if (value != null) {
-                          widget.data.frequency.timesOfDay[widget.data.frequency.timesOfDay.indexOf(time)] = MedicationTime(time: value);
                           setState(() {
-                            times = widget.data.frequency.timesOfDay;
+                            widget.data.frequency.timesOfDay[widget.data.frequency.timesOfDay.indexOf(time)] = MedicationTime(time: value);
                           });
                         }
                       });
@@ -61,9 +57,8 @@ class MedicineTimeViewState extends State<MedicineTimeView> {
             initialTime: TimeOfDay.now(),
           ).then((TimeOfDay? value) {
             if (value != null) {
-              widget.data.frequency.timesOfDay.add(MedicationTime(time: value));
               setState(() {
-                times = widget.data.frequency.timesOfDay;
+                widget.data.frequency.timesOfDay.add(MedicationTime(time: value));
               });
             }
           });

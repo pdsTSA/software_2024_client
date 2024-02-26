@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tsa_software_2024/data/data_manager.dart';
+import 'package:tsa_software_2024/routes/arguments/arguments.dart';
 
 class MedicineView extends StatefulWidget {
-  const MedicineView({super.key});
+  final RouteObserver<ModalRoute> routeObserver;
+  const MedicineView({super.key, required this.routeObserver});
 
   @override
   State<StatefulWidget> createState() => MedicineViewState();
@@ -12,8 +14,22 @@ class MedicineViewState extends State<MedicineView> with RouteAware {
   var future = getAppData();
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    widget.routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.routeObserver.unsubscribe(this);
+  }
+
+  @override
   void didPopNext() {
     super.didPopNext();
+    print("refreshing route");
+
     setState(() {
       future = getAppData();
     });
@@ -29,8 +45,10 @@ class MedicineViewState extends State<MedicineView> with RouteAware {
             var data = snapshot.data;
             return ListView(
               children: data!.medications.asMap().map((index, e) => MapEntry(index, ListTile(
-                title: Text(e.name!),
-                trailing: Checkbox(
+                title: Text(e.name!, style: (!e.enabled)
+                  ? const TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough)
+                  : const TextStyle(),),
+                leading: Checkbox(
                   value: e.enabled,
                   onChanged: (value) async {
                     var newData = await getAppData();
@@ -39,6 +57,12 @@ class MedicineViewState extends State<MedicineView> with RouteAware {
                     setState(() {
                       future = getAppData();
                     });
+                  },
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () async {
+                    Navigator.pushNamed(context, "/add_medicine", arguments: AddMedicineArguments(medicine: e));
                   },
                 ),
               ))).values.toList() as List<Widget>

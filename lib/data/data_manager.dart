@@ -4,8 +4,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 part 'data_manager.g.dart';
+
+var uuidgen = const Uuid();
 
 @JsonSerializable()
 class AppData {
@@ -13,6 +16,7 @@ class AppData {
   List<Medication> medications = [];
 
   void addMedication(Medication medication) {
+    medications.removeWhere((element) => element.uuid == medication.uuid);
     medications.add(medication);
     saveAppData(this);
   }
@@ -25,9 +29,13 @@ class AppData {
 class Medication {
   Medication();
 
+  /// UUID for the medication
+  String uuid = uuidgen.v4();
+
   /// The name of the medication
   String? name;
 
+  /// Whether the medication is enabled or not
   bool enabled = true;
 
   /// The frequency of the medication
@@ -59,8 +67,41 @@ class Frequency {
   ///How many days between doses (optional)
   int? daysBetween;
 
+  ///Most recent day to take the medication (in unix time)
+  int lastDay = 0;
+
   DateTime? endDate;
   bool hasEndDate = false;
+
+  MedicationTime getEarliestTime() {
+    if (timesOfDay.isEmpty) {
+      return MedicationTime();
+    }
+    var earliest = timesOfDay[0];
+    for (var time in timesOfDay) {
+      if (time.hour < earliest.hour) {
+        earliest = time;
+      } else if (time.hour == earliest.hour && time.minute < earliest.minute) {
+        earliest = time;
+      }
+    }
+    return earliest;
+  }
+
+  MedicationTime getLatestTime() {
+    if (timesOfDay.isEmpty) {
+      return MedicationTime();
+    }
+    var latest = timesOfDay[0];
+    for (var time in timesOfDay) {
+      if (time.hour > latest.hour) {
+        latest = time;
+      } else if (time.hour == latest.hour && time.minute > latest.minute) {
+        latest = time;
+      }
+    }
+    return latest;
+  }
 
   factory Frequency.fromJson(Map<String, dynamic> json) => _$FrequencyFromJson(json);
   Map<String, dynamic> toJson() => _$FrequencyToJson(this);

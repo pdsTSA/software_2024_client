@@ -5,9 +5,10 @@ import 'package:tsa_software_2024/routes/tabs/root_tabs/home.dart';
 import 'package:tsa_software_2024/routes/tabs/root_tabs/medicine.dart';
 
 class RootRoute extends StatefulWidget {
+  final RouteObserver<ModalRoute> routeObserver;
   final List<CameraDescription> cameras;
 
-  const RootRoute({super.key, required this.cameras});
+  const RootRoute({super.key, required this.cameras, required this.routeObserver});
 
   @override
   RootRouteState createState() => RootRouteState();
@@ -52,7 +53,7 @@ class RootRouteState extends State<RootRoute> {
           body: IndexedStack(
             index: currentIndex,
             children: [
-              (currentIndex == 0) ? MedicineView() : Container(),
+              (currentIndex == 0) ? MedicineView(routeObserver: widget.routeObserver) : Container(),
               (currentIndex == 1) ? HomeView(camera: widget.cameras.first) : Container(),
               (currentIndex == 2) ? CalendarView() : Container(),
             ],

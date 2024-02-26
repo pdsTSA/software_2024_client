@@ -14,9 +14,10 @@ class MedicineDatesView extends StatefulWidget {
 class _MedicineDatesViewState extends State<MedicineDatesView> {
   var repeatMode = RepeatMode.interval;
   final weekdays = List.filled(7, false);
-  var daysBetween = 0;
+  var daysBetween = 1;
   var hasEndDate = false;
   var endDate = DateTime.now();
+  var startDate = DateTime.now();
 
   final DateFormat dateFormatter = DateFormat('yyyy-MM-dd');
 
@@ -32,6 +33,7 @@ class _MedicineDatesViewState extends State<MedicineDatesView> {
       case RepeatMode.interval:
         widget.data.frequency.daysBetween = daysBetween;
         widget.data.frequency.daysOfWeek = null;
+        widget.data.frequency.lastDay = startDate.subtract(Duration(days: daysBetween)).millisecondsSinceEpoch;
     }
 
     widget.data.frequency.hasEndDate = hasEndDate;
@@ -42,6 +44,9 @@ class _MedicineDatesViewState extends State<MedicineDatesView> {
 
   @override
   Widget build(BuildContext context) {
+    daysBetween = widget.data.frequency.daysBetween ?? 1;
+    updateData();
+
     return Scaffold(
       body: Column(
         children: [
@@ -55,7 +60,7 @@ class _MedicineDatesViewState extends State<MedicineDatesView> {
               )
           ),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 Expanded(
@@ -118,15 +123,39 @@ class _MedicineDatesViewState extends State<MedicineDatesView> {
                 SizedBox(
                   width: 32,
                   child: TextField(
+                    controller: TextEditingController(text: daysBetween.toString()),
                     style: const TextStyle(fontSize: 16),
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
                     onChanged: (String value) {
-                      daysBetween = int.parse(value);
+                      setState(() {
+                        daysBetween = int.parse(value);
+                        updateData();
+                      });
                     },
                   ),
                 ),
-                const Text(" days", style: TextStyle(fontSize: 16))
+                const Text(" days", style: TextStyle(fontSize: 16)),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: OutlinedButton(
+                    onPressed: () async {
+                      var date = await showDatePicker(
+                        context: context,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.utc(2100)
+                      );
+
+                      setState(() {
+                        if (date != null) {
+                          startDate = date;
+                          updateData();
+                        }
+                      });
+                    },
+                    child: Text("Start: ${dateFormatter.format(startDate)}"),
+                  )
+                )
               ],
             ),
           ),
@@ -165,7 +194,7 @@ class _MedicineDatesViewState extends State<MedicineDatesView> {
                         }
                       });
                     },
-                    child: Text(dateFormatter.format(endDate)),
+                    child: Text("End: ${dateFormatter.format(endDate)}"),
                   ) : Container()
                 )
               ],
