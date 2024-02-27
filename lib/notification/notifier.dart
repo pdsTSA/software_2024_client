@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tsa_software_2024/data/data_manager.dart';
+import 'package:tsa_software_2024/data/medication/medication.dart';
 import 'package:workmanager/workmanager.dart';
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =

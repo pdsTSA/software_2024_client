@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:tsa_software_2024/data/data_manager.dart';
+import 'package:tsa_software_2024/data/medication/medication.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
 class MedicineDatesView extends StatefulWidget {

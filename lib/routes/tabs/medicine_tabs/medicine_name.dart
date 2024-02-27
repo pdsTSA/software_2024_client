@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tsa_software_2024/data/data_manager.dart';
+import 'package:tsa_software_2024/data/medication/medication.dart';
 
 class MedicineNameView extends StatefulWidget {
   final Medication data;
