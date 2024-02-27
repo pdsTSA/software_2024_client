@@ -1,8 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tsa_software_2024/routes/tabs/root_tabs/calendar.dart';
+import 'package:tsa_software_2024/routes/tabs/root_tabs/contact.dart';
 import 'package:tsa_software_2024/routes/tabs/root_tabs/home.dart';
 import 'package:tsa_software_2024/routes/tabs/root_tabs/medicine.dart';
+import 'package:tsa_software_2024/routes/tabs/root_tabs/settings.dart';
 
 class RootRoute extends StatefulWidget {
   final RouteObserver<ModalRoute> routeObserver;
@@ -15,7 +17,7 @@ class RootRoute extends StatefulWidget {
 }
 
 class RootRouteState extends State<RootRoute> {
-  int currentIndex = 1;
+  int currentIndex = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class RootRouteState extends State<RootRoute> {
         onPopInvoked: (bool didPop) async {
           if (didPop) {
             setState(() {
-              currentIndex = 1;
+              currentIndex = 2;
             });
           }
         },
@@ -37,7 +39,11 @@ class RootRouteState extends State<RootRoute> {
             },
             destinations: const [
               NavigationDestination(
-                  icon: Icon(Icons.list_alt),
+                  icon: Icon(Icons.perm_phone_msg),
+                  label: "Contacts"
+              ),
+              NavigationDestination(
+                  icon: Icon(Icons.medication),
                   label: "Medicine"
               ),
               NavigationDestination(
@@ -48,14 +54,20 @@ class RootRouteState extends State<RootRoute> {
                 icon: Icon(Icons.calendar_today),
                 label: 'Calendar',
               ),
+              NavigationDestination(
+                  icon: Icon(Icons.settings),
+                  label: "Settings"
+              )
             ],
           ),
           body: IndexedStack(
             index: currentIndex,
             children: [
-              (currentIndex == 0) ? MedicineView(routeObserver: widget.routeObserver) : Container(),
-              (currentIndex == 1) ? HomeView(camera: widget.cameras.first) : Container(),
-              (currentIndex == 2) ? CalendarView() : Container(),
+              (currentIndex == 0) ? ContactView() : Container(),
+              (currentIndex == 1) ? MedicineView(routeObserver: widget.routeObserver) : Container(),
+              (currentIndex == 2) ? HomeView(camera: widget.cameras.first) : Container(),
+              (currentIndex == 3) ? CalendarView() : Container(),
+              (currentIndex == 4) ? SettingsView() : Container(),
             ],
           ),
         )
