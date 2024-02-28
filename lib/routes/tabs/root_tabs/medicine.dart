@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tsa_software_2024/data/data_manager.dart';
 import 'package:tsa_software_2024/routes/arguments/arguments.dart';
-import 'package:tsa_software_2024/widgets/medicine_overview.dart';
+import 'package:tsa_software_2024/widgets/medicine/medicine_overview.dart';
 
 class MedicineView extends StatefulWidget {
   final RouteObserver<ModalRoute> routeObserver;
@@ -29,7 +29,6 @@ class MedicineViewState extends State<MedicineView> with RouteAware {
   @override
   void didPopNext() {
     super.didPopNext();
-    print("refreshing route");
 
     setState(() {
       future = getAppData();

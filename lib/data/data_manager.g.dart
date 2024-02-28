@@ -10,9 +10,13 @@ AppData _$AppDataFromJson(Map<String, dynamic> json) => AppData()
   ..medications = (json['medications'] as List<dynamic>)
       .map((e) => Medication.fromJson(e as Map<String, dynamic>))
       .toList()
+  ..contacts = (json['contacts'] as List<dynamic>)
+      .map((e) => MedicalContact.fromJson(e as Map<String, dynamic>))
+      .toList()
   ..config = GlobalConfig.fromJson(json['config'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$AppDataToJson(AppData instance) => <String, dynamic>{
       'medications': instance.medications,
+      'contacts': instance.contacts,
       'config': instance.config,
     };

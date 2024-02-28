@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tsa_software_2024/data/medication/medication.dart';
-import 'package:tsa_software_2024/widgets/medicine_overview.dart';
+import 'package:tsa_software_2024/widgets/medicine/medicine_overview.dart';
 
 class MedicineConfirmationView extends StatefulWidget {
   final Medication data;
