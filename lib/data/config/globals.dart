@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'globals.g.dart';
 
+const APP_NAME = "PillMate";
+
 //TODO: find other stuff to put in here
 @JsonSerializable()
 class GlobalConfig {

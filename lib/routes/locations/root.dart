@@ -1,10 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:tsa_software_2024/routes/tabs/root_tabs/about.dart';
 import 'package:tsa_software_2024/routes/tabs/root_tabs/calendar.dart';
 import 'package:tsa_software_2024/routes/tabs/root_tabs/contact.dart';
 import 'package:tsa_software_2024/routes/tabs/root_tabs/home.dart';
 import 'package:tsa_software_2024/routes/tabs/root_tabs/medicine.dart';
-import 'package:tsa_software_2024/routes/tabs/root_tabs/settings.dart';
 
 class RootRoute extends StatefulWidget {
   final RouteObserver<ModalRoute> routeObserver;
@@ -55,8 +55,8 @@ class RootRouteState extends State<RootRoute> {
                 label: 'Calendar',
               ),
               NavigationDestination(
-                  icon: Icon(Icons.settings),
-                  label: "Settings"
+                  icon: Icon(Icons.question_mark),
+                  label: "About"
               )
             ],
           ),
@@ -67,7 +67,7 @@ class RootRouteState extends State<RootRoute> {
               (currentIndex == 1) ? MedicineView(routeObserver: widget.routeObserver) : Container(),
               (currentIndex == 2) ? HomeView(camera: widget.cameras.first) : Container(),
               (currentIndex == 3) ? CalendarView() : Container(),
-              (currentIndex == 4) ? SettingsView() : Container(),
+              (currentIndex == 4) ? AboutView() : Container(),
             ],
           ),
         )
