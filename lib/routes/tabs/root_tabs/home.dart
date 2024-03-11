@@ -132,7 +132,7 @@ class _MedicationSheetState extends State<MedicationSheet> {
                   padding: const EdgeInsets.all(12),
                   child: InkWell(
                     onTap: () async => await launchUrlString("https://www.drugs.com/mtm/${response.medication}.html"),
-                    child: Text(response.medication, style: const TextStyle(fontSize: 24),),
+                    child: Text(response.medication, style: const TextStyle(fontSize: 24, color: Colors.blue, decoration: TextDecoration.underline),),
                   ),
                 ),
                 Padding(
