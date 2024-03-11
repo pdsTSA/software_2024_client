@@ -5,6 +5,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:tsa_software_2024/data/http/http_response.dart';
+import 'package:tsa_software_2024/data/medication/medication.dart';
+import 'package:tsa_software_2024/routes/arguments/arguments.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class HomeView extends StatefulWidget {
@@ -130,10 +132,20 @@ class _MedicationSheetState extends State<MedicationSheet> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(12),
-                  child: InkWell(
-                    onTap: () async => await launchUrlString("https://www.drugs.com/mtm/${response.medication}.html"),
-                    child: Text(response.medication, style: const TextStyle(fontSize: 24, color: Colors.blue, decoration: TextDecoration.underline),),
-                  ),
+                  child: Expanded(
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () async => await launchUrlString("https://www.drugs.com/mtm/${response.medication}.html"),
+                          child: Text(response.medication, style: const TextStyle(fontSize: 24, color: Colors.blue, decoration: TextDecoration.underline),),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pushNamed(context, "/add_medicine", arguments: AddMedicineArguments(medicine: Medication())),
+                          icon: const Icon(Icons.add)
+                        )
+                      ],
+                    ),
+                  )
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12),
