@@ -48,6 +48,8 @@ dependencies:
   url_launcher: ^6.2.5
   requests: ^4.7.0
   http: ^0.13.6
+  image: ^4.1.7
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:

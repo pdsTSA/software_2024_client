@@ -8,9 +8,8 @@ import 'package:tsa_software_2024/routes/tabs/root_tabs/medicine.dart';
 
 class RootRoute extends StatefulWidget {
   final RouteObserver<ModalRoute> routeObserver;
-  final List<CameraDescription> cameras;
 
-  const RootRoute({super.key, required this.cameras, required this.routeObserver});
+  const RootRoute({super.key, required this.routeObserver});
 
   @override
   RootRouteState createState() => RootRouteState();
@@ -65,7 +64,7 @@ class RootRouteState extends State<RootRoute> {
             children: [
               (currentIndex == 0) ? ContactView() : Container(),
               (currentIndex == 1) ? MedicineView(routeObserver: widget.routeObserver) : Container(),
-              (currentIndex == 2) ? HomeView(camera: widget.cameras.first) : Container(),
+              (currentIndex == 2) ? HomeView() : Container(),
               (currentIndex == 3) ? CalendarView() : Container(),
               (currentIndex == 4) ? AboutView() : Container(),
             ],

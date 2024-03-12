@@ -5,9 +5,7 @@ import 'package:tsa_software_2024/routes/locations/add_medicine.dart';
 import 'package:tsa_software_2024/routes/locations/root.dart';
 
 class SoftwareApp extends StatelessWidget {
-  final List<CameraDescription> cameras;
-
-  const SoftwareApp({super.key, required this.cameras});
+  const SoftwareApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +16,9 @@ class SoftwareApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: RootRoute(cameras: cameras, routeObserver: routeObserver,),
+      home: RootRoute(routeObserver: routeObserver,),
       routes: {
-        "/root": (BuildContext context) => RootRoute(cameras: cameras, routeObserver: routeObserver),
+        "/root": (BuildContext context) => RootRoute(routeObserver: routeObserver),
         "/add_medicine": (BuildContext context) => AddMedicineRoute(),
       },
       navigatorObservers: [routeObserver],
@@ -30,8 +28,7 @@ class SoftwareApp extends StatelessWidget {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final cameras = await availableCameras();
   Notifier.initialize();
-  runApp(SoftwareApp(cameras: cameras));
+  runApp(SoftwareApp());
 }
 

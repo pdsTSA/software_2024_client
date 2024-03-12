@@ -38,8 +38,8 @@ android {
         applicationId "tsa.pds.tsa_software_2024"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 33
-        targetSdkVersion 33
+        minSdkVersion 31
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
