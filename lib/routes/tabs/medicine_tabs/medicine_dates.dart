@@ -124,7 +124,7 @@ class _MedicineDatesViewState extends State<MedicineDatesView> {
                   children: [
                     Text("Repeat every $daysBetween days", style: const TextStyle(fontSize: 16)),
                     SizedBox(
-                        width: 220,
+                        width: 200,
                         child: Slider(
                           value: daysBetween.toDouble(),
                           min: 1,

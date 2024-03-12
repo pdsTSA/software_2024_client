@@ -17,7 +17,25 @@ class HomeView extends StatefulWidget {
 }
 
 class HomeViewState extends State<HomeView> {
-  final ImagePicker _picker = ImagePicker();
+  ImagePicker? _picker;
+
+  Future<void> getLostData() async {
+    _picker = ImagePicker();
+    final LostDataResponse response = await _picker!.retrieveLostData();
+    if (response.isEmpty) {
+      return;
+    }
+    final List<XFile>? files = response.files;
+    if (files != null) {
+      showMedication(files[0].path);
+    } else {}
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getLostData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +43,7 @@ class HomeViewState extends State<HomeView> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Column(
-            children: [
-
-            ],
+            children: [],
           );
         },
       ),
@@ -35,59 +51,62 @@ class HomeViewState extends State<HomeView> {
         child: const Icon(Icons.camera_alt),
         onPressed: () async {
           try {
-            final XFile? file =
-                await _picker.pickImage(source: ImageSource.camera);
+            final XFile? file = await _picker!
+                .pickImage(source: ImageSource.camera, imageQuality: 20);
 
             if (file == null) return;
 
-            var request = http.MultipartRequest(
-                "POST", Uri.parse("https://phqsh.tech/drug"));
-            var picture = await http.MultipartFile.fromPath("image", file.path);
-            request.files.add(picture);
-
-            showModalBottomSheet(
-                context: context,
-                showDragHandle: true,
-                builder: (context) => FutureBuilder<http.StreamedResponse>(
-                    future: request.send(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done &&
-                          !snapshot.hasError) {
-                        print("done");
-                        return SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: MedicationSheet(
-                              future: snapshot.data!.stream.toBytes()),
-                        );
-                      } else if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        print("waiting");
-                        return SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      } else {
-                        print("error");
-                        return SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: const Padding(
-                            padding: EdgeInsets.all(60),
-                            child: Text(
-                              "Medication not found",
-                              style: TextStyle(fontSize: 24),
-                            ),
-                          ),
-                        );
-                      }
-                    }));
+            await showMedication(file.path);
           } catch (e) {
             print(e);
           }
         },
       ),
     );
+  }
+
+  Future showMedication(String filepath) async {
+    var request =
+        http.MultipartRequest("POST", Uri.parse("https://phqsh.tech/drug"));
+    var picture = await http.MultipartFile.fromPath("image", filepath);
+    request.files.add(picture);
+
+    showModalBottomSheet(
+        context: context,
+        showDragHandle: false,
+        builder: (context) => FutureBuilder<http.StreamedResponse>(
+            future: request.send(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  !snapshot.hasError) {
+                print("done");
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child:
+                      MedicationSheet(future: snapshot.data!.stream.toBytes()),
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                print("waiting");
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else {
+                print("error");
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: const Padding(
+                    padding: EdgeInsets.all(60),
+                    child: Text(
+                      "Medication not found",
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  ),
+                );
+              }
+            }));
   }
 }
 
@@ -108,48 +127,72 @@ class _MedicationSheetState extends State<MedicationSheet> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             try {
-              var json = jsonDecode(utf8.decode(snapshot.data!));
+              print("deserializing data");
+              var utf = utf8.decode(snapshot.data!);
+              var json = jsonDecode(utf);
+              print(json);
               OCRResponse response = OCRResponse.fromJson(json);
+              print("loaded data structure");
 
-              return Column(
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Expanded(
-                        child: Row(
-                          children: [
-                            InkWell(
-                              onTap: () async => await launchUrlString(
-                                  "https://www.drugs.com/mtm/${response.medication}.html"),
-                              child: Text(
-                                response.medication,
-                                style: const TextStyle(
-                                    fontSize: 24,
-                                    color: Colors.blue,
-                                    decoration: TextDecoration.underline),
-                              ),
-                            ),
-                            IconButton(
-                                onPressed: () => Navigator.pushNamed(
-                                    context, "/add_medicine",
-                                    arguments: AddMedicineArguments(
-                                        medicine: Medication())),
-                                icon: const Icon(Icons.add))
-                          ],
-                        ),
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      "Used to treat ${response.condition}",
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Image.network(response.imageUrl)),
-                ],
-              );
+              return Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        switch(index){
+                          case 0:
+                            return Flex(
+                              direction: Axis.horizontal,
+                              children: [
+                                Flexible(
+                                  child: Wrap(
+                                    alignment: WrapAlignment.spaceBetween,
+                                    children: [
+                                      InkWell(
+                                        onTap: () async => await launchUrlString(
+                                            "https://www.drugs.com/mtm/${response.drug}.html"),
+                                        child: Text(
+                                          response.drug,
+                                          style: const TextStyle(
+                                              fontSize: 36,
+                                              color: Colors.blue,
+                                              decoration:
+                                              TextDecoration.underline),
+                                        ),
+                                      ),
+                                      IconButton(
+                                          onPressed: () {
+                                            var medicine = Medication();
+                                            medicine.name = response.drug;
+
+                                            Navigator.pushNamed(
+                                                context, "/add_medicine",
+                                                arguments: AddMedicineArguments(
+                                                    medicine: medicine));
+                                          },
+                                          icon: const Icon(
+                                              Icons.add_circle_outline))
+                                    ],
+                                  ),
+                                )
+                              ],
+                            );
+                          case 1:
+                            return Text(
+                              "Used to treat ${response.condition}",
+                              style: const TextStyle(fontSize: 24),
+                            );
+                          case 2:
+                            return Image.network(response.image);
+                          default:
+                            return Container();
+                        }
+                      },
+                      separatorBuilder: (context, index) => const SizedBox(
+                            height: 10,
+                          ),
+                      itemCount: 3));
             } catch (e) {
               return const Padding(
                 padding: EdgeInsets.all(60),
@@ -160,7 +203,7 @@ class _MedicationSheetState extends State<MedicationSheet> {
               );
             }
           } else {
-            return Container();
+            return const CircularProgressIndicator();
           }
         });
   }

@@ -4,11 +4,11 @@ part 'http_response.g.dart';
 
 @JsonSerializable()
 class OCRResponse {
-  OCRResponse({required this.medication, required this.condition, required this.imageUrl});
+  OCRResponse({required this.drug, required this.condition, required this.image});
 
-  String medication;
+  String drug;
   String condition;
-  String imageUrl;
+  String image;
 
   factory OCRResponse.fromJson(Map<String, dynamic> json) => _$OCRResponseFromJson(json);
   Map<String, dynamic> toJson() => _$OCRResponseToJson(this);

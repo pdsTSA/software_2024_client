@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:tsa_software_2024/data/config/globals.dart';
 import 'package:tsa_software_2024/data/data_manager.dart';
 import 'package:tsa_software_2024/data/medication/medication.dart';
 import 'package:workmanager/workmanager.dart';
@@ -22,7 +23,6 @@ class Notifier {
 
     Workmanager().initialize(
       callbackDispatcher,
-      isInDebugMode: true
     );
 
     scheduleAll();
@@ -88,7 +88,7 @@ void callbackDispatcher() {
 
     var medication = appData.medications[index];
     //TODO: improve this message
-    Notifier.notify("pillmate", "Take your medication", medication.name!);
+    Notifier.notify("pillmate", "Time to take ${medication.name!}!", "Notification scheduled by $APP_NAME");
     await Notifier.schedule(medication);
     appData.medications[index] = medication;
     saveAppData(appData);

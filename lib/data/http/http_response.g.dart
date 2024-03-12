@@ -7,14 +7,14 @@ part of 'http_response.dart';
 // **************************************************************************
 
 OCRResponse _$OCRResponseFromJson(Map<String, dynamic> json) => OCRResponse(
-      medication: json['medication'] as String,
+      drug: json['drug'] as String,
       condition: json['condition'] as String,
-      imageUrl: json['imageUrl'] as String,
+      image: json['image'] as String,
     );
 
 Map<String, dynamic> _$OCRResponseToJson(OCRResponse instance) =>
     <String, dynamic>{
-      'medication': instance.medication,
+      'drug': instance.drug,
       'condition': instance.condition,
-      'imageUrl': instance.imageUrl,
+      'image': instance.image,
     };
