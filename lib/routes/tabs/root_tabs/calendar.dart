@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image/image.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tsa_software_2024/data/data_manager.dart';
 
@@ -25,11 +26,11 @@ class CalendarViewState extends State<CalendarView> {
     var events = <CalendarEvent>[];
 
     for (var medication in medications) {
+      if (!medication.enabled) continue;
       var nextDate = currentTime.copyWith(hour: 0, minute: 0, second: 0);
       while (nextDate.day == currentTime.day) {
         var nextDuration = medication.frequency.nextDuration(nextDate);
         nextDate = nextDate.add(nextDuration ?? const Duration(days: 1));
-
         if (nextDate.day == currentTime.day) {
           events.add(CalendarEvent(
               title: medication.name!, time: TimeOfDay.fromDateTime(nextDate)));

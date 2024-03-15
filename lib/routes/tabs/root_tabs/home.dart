@@ -101,6 +101,7 @@ class HomeViewState extends State<HomeView> {
     showModalBottomSheet(
         context: context,
         showDragHandle: false,
+        enableDrag: false,
         builder: (context) => FutureBuilder<http.StreamedResponse>(
             future: request.send(),
             builder: (context, snapshot) {
