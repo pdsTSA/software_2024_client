@@ -119,7 +119,9 @@ class Frequency {
     }
 
     //set to earliest time
-    for (final e in timesOfDay) {
+    var tmp = timesOfDay;
+    tmp.sort((a, b) => compareTimeOfDay(a.toTime(), b.toTime()));
+    for (final e in tmp) {
       next = DateTime(next.year, next.month, next.day, e.hour, e.minute);
       if (next.isAfter(now)) {
         return next.difference(now);
@@ -128,6 +130,13 @@ class Frequency {
 
     return null;
   }
+
+  int compareTimeOfDay(TimeOfDay time1, TimeOfDay time2) {
+    var totalMinutes1 = time1.hour * 60 + time1.minute;
+    var totalMinutes2 = time2.hour * 60 + time2.minute;
+    return totalMinutes1.compareTo(totalMinutes2);
+  }
+
 
   factory Frequency.fromJson(Map<String, dynamic> json) => _$FrequencyFromJson(json);
   Map<String, dynamic> toJson() => _$FrequencyToJson(this);
@@ -148,6 +157,8 @@ class MedicationTime {
   TimeOfDay toTime() {
     return TimeOfDay(hour: hour, minute: minute);
   }
+
+
 
   factory MedicationTime.fromJson(Map<String, dynamic> json) => _$MedicationTimeFromJson(json);
   Map<String, dynamic> toJson() => _$MedicationTimeToJson(this);

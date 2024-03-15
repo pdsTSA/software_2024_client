@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:tsa_software_2024/data/config/globals.dart';
 import 'package:tsa_software_2024/data/http/http_response.dart';
 import 'package:tsa_software_2024/data/medication/medication.dart';
 import 'package:tsa_software_2024/routes/arguments/arguments.dart';
@@ -40,12 +41,38 @@ class HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Column(
-            children: [],
-          );
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(12),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: ListView(
+            children: const [
+              Center(
+                child: Image(
+                  image: AssetImage("images/icon.png"),
+                  width: 128,
+                ),
+              ),
+              Text(
+                APP_NAME,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 48),
+              ),
+              SizedBox(height: 20),
+              Text(
+                "Quickly figure out what your medication does and remind yourself to take it with $APP_NAME!",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24),
+              ),
+              SizedBox(height: 20),
+              Text(
+                "To get started, click on the camera icon below.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24),
+              ),
+            ],
+          ),
+        )
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.camera_alt),
@@ -140,7 +167,7 @@ class _MedicationSheetState extends State<MedicationSheet> {
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
-                        switch(index){
+                        switch (index) {
                           case 0:
                             return Flex(
                               direction: Axis.horizontal,
@@ -158,7 +185,7 @@ class _MedicationSheetState extends State<MedicationSheet> {
                                               fontSize: 36,
                                               color: Colors.blue,
                                               decoration:
-                                              TextDecoration.underline),
+                                                  TextDecoration.underline),
                                         ),
                                       ),
                                       IconButton(

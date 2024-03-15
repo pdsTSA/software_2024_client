@@ -24,7 +24,9 @@ class AddMedicineRouteState extends State<AddMedicineRoute>{
     final args = ModalRoute.of(context)!.settings.arguments as AddMedicineArguments?;
 
     if (args != null) {
-      data = args.medicine;
+      setState(() {
+        data = args.medicine;
+      });
     }
 
     return Scaffold(
@@ -68,7 +70,8 @@ class AddMedicineRouteState extends State<AddMedicineRoute>{
             (currentScreen == 0) ? MedicineNameView(data: data) : Container(),
             (currentScreen == 1) ? MedicineTimeView(data: data) : Container(),
             (currentScreen == 2) ? MedicineDatesView(data: data) : Container(),
-            (currentScreen == 3) ? MedicineConfirmationView(data: data, switchScreens: navigateScreen, saveData: addMedication,) : Container()
+            (currentScreen == 3) ? MedicineConfirmationView(data: data, switchScreens: navigateScreen, saveData: addMedication,) : Container(),
+            (currentScreen == 4) ? AddMedicineWidget(saveData: addMedication) : Container(),
           ],
         ),
       )
@@ -89,3 +92,25 @@ class AddMedicineRouteState extends State<AddMedicineRoute>{
     Navigator.of(context).pop();
   }
 }
+
+class AddMedicineWidget extends StatefulWidget {
+  final Function saveData;
+  
+  const AddMedicineWidget({super.key, required this.saveData});
+
+  @override
+  State<AddMedicineWidget> createState() => _AddMedicineWidgetState();
+}
+
+class _AddMedicineWidgetState extends State<AddMedicineWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: widget.saveData(context),
+      builder: (context, snapshot) {
+        return Container();
+      }
+    );
+  }
+}
+

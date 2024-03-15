@@ -47,6 +47,10 @@ class CalendarViewState extends State<CalendarView> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             appData = snapshot.data! as AppData?;
+
+            dailyMedications = generateDailyMedications(DateTime(
+                focusedDay.year, focusedDay.month, focusedDay.day, 0, 0));
+
             return Scaffold(
                 body: Column(children: [
                   Padding(

@@ -37,7 +37,7 @@ class _MedicineConfirmationViewState extends State<MedicineConfirmationView> {
                 ],
               )
           ),
-          MedicineOverview(parent: parent, switchScreens: widget.switchScreens),
+          Expanded(child: MedicineOverview(parent: parent, switchScreens: widget.switchScreens),)
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(

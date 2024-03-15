@@ -12,67 +12,65 @@ class MedicineOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView(
-        children: [
-          ListTile(
-            title: Text(parent.name!),
-            subtitle: const Text("Medication name"),
-            trailing: (switchScreens != null) ? IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                switchScreens!(0);
-              },
-            ) : null,
-          ),
-          ListTile(
-            title: Text(trimEnding(parent.frequency.timesOfDay
-                .fold("", (value, element) =>
-            value += "${element.toTime().format(context)}, "))),
-            subtitle: const Text("Times of day"),
-            trailing: (switchScreens != null) ? IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                switchScreens!(1);
-              },
-            ) : null,
-          ),
-          (parent.frequency.daysOfWeek != null) ? ListTile(
-            title: Text(trimEnding(parent.frequency.daysOfWeek!
-                .map((e) => daysOfWeek[e])
-                .fold("", (previousValue, element) =>
-            previousValue += "$element, "))),
-            subtitle: const Text("Medication days"),
-            trailing: (switchScreens != null) ? IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                switchScreens!(2);
-              },
-            ) : null,
-          ) : ListTile(
-            title: Text("Once every ${parent.frequency.daysBetween} days"),
-            subtitle: const Text("Medication interval"),
-            trailing: (switchScreens != null) ? IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                switchScreens!(2);
-              },
-            ) : null,
-          ),
-          ListTile(
-            title: Text(
-                (!parent.frequency.hasEndDate) ? "Never" : dateFormatter.format(
-                    parent.frequency.endDate!)),
-            subtitle: const Text("Medication end date"),
-            trailing: (switchScreens != null) ? IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                switchScreens!(2);
-              },
-            ) : null,
-          ),
-        ],
-      ),
+    return ListView(
+      children: [
+        ListTile(
+          title: Text(parent.name!),
+          subtitle: const Text("Medication name"),
+          trailing: (switchScreens != null) ? IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              switchScreens!(0);
+            },
+          ) : null,
+        ),
+        ListTile(
+          title: Text(trimEnding(parent.frequency.timesOfDay
+              .fold("", (value, element) =>
+          value += "${element.toTime().format(context)}, "))),
+          subtitle: const Text("Times of day"),
+          trailing: (switchScreens != null) ? IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              switchScreens!(1);
+            },
+          ) : null,
+        ),
+        (parent.frequency.daysOfWeek != null) ? ListTile(
+          title: Text(trimEnding(parent.frequency.daysOfWeek!
+              .map((e) => daysOfWeek[e])
+              .fold("", (previousValue, element) =>
+          previousValue += "$element, "))),
+          subtitle: const Text("Medication days"),
+          trailing: (switchScreens != null) ? IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              switchScreens!(2);
+            },
+          ) : null,
+        ) : ListTile(
+          title: Text("Once every ${parent.frequency.daysBetween} days"),
+          subtitle: const Text("Medication interval"),
+          trailing: (switchScreens != null) ? IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              switchScreens!(2);
+            },
+          ) : null,
+        ),
+        ListTile(
+          title: Text(
+              (!parent.frequency.hasEndDate) ? "Never" : dateFormatter.format(
+                  parent.frequency.endDate!)),
+          subtitle: const Text("Medication end date"),
+          trailing: (switchScreens != null) ? IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              switchScreens!(2);
+            },
+          ) : null,
+        ),
+      ],
     );
   }
 

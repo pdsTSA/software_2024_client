@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tsa_software_2024/data/data_manager.dart';
+import 'package:tsa_software_2024/data/medication/medication.dart';
 import 'package:tsa_software_2024/routes/arguments/arguments.dart';
 import 'package:tsa_software_2024/widgets/medicine/medicine_overview.dart';
 
@@ -70,7 +71,7 @@ class MedicineViewState extends State<MedicineView> with RouteAware {
                       context: context,
                       showDragHandle: true,
                       builder: (context) {
-                        return MedicineOverview(parent: e);
+                        return MedicineOverview(parent: e,);
                       }
                   );
                 },
