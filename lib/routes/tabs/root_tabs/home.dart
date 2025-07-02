@@ -179,7 +179,7 @@ class _MedicationSheetState extends State<MedicationSheet> {
                                     children: [
                                       InkWell(
                                         onTap: () async => await launchUrlString(
-                                            "https://www.drugs.com/mtm/${response.drug}.html"),
+                                            "https://www.drugs.com/mtm/${response.drug.split(" ")[0].split("/")[0]}.html"),
                                         child: Text(
                                           response.drug,
                                           style: const TextStyle(
